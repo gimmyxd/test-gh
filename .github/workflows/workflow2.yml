@@ -1,0 +1,12 @@
+name: workflow2
+
+on:
+  push:
+    branches:
+    - 'main'
+
+jobs:
+  call-workflow-passing-data:
+    uses: gimmyxd/test-gh/.github/workflows/reusable-workflow.yml@main
+    with:
+      username: workflow2
