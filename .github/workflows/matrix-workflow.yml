@@ -9,7 +9,7 @@ jobs:
     - id: set-matrix
       run: |
         DIRS=`git diff --name-only HEAD HEAD~1 | xargs -L1 dirname | uniq`
-        echo "::set-output name=matrix::{\"component\": $DIRS}"
+        echo "::set-output name=matrix::{\"component\": [\"c\", \"d\"]}"
   job2:
     needs: job1
     runs-on: ubuntu-latest
