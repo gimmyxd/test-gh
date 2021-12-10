@@ -15,7 +15,7 @@ jobs:
         echo "$DIFF"
         # Escape newlines (replace \n with %0A)
         echo "::set-output name=matrix::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"
-    - run: echo "${{ steps.diff.outputs.matrix }}"
+    - run: echo "${{ steps.set-matrix.outputs.matrix }}"
 
   deploy:
     needs: prepare
