@@ -6,11 +6,9 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-    - uses: actions/checkout@v2
-      with:
-        depth: 0
     - id: set-matrix
       run: |
+        git fetch origin ${{ github.event.before }} --depth=1
         # See https://github.community/t/check-pushed-file-changes-with-git-diff-tree-in-github-actions/17220/10
         export DIFF=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA | xargs -L1 dirname | uniq )
         echo "$DIFF"
