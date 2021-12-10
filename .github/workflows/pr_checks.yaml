@@ -14,7 +14,8 @@ jobs:
       - name: Check commit is in beta
         run: |
           git fetch origin beta
-          commit=$( git log --pretty=format:"%H" ${{ github.sha }} main )
+          # get a list of commits that from pull reuqest
+          commit=$( git log --pretty=format:"%H"  HEAD...origin/main )
           echo "commits: $commits"
 
           # if git merge-base --is-ancestor $GITHUB_SHA beta; then
