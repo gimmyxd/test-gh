@@ -12,16 +12,16 @@ jobs:
       run: |
         git fetch origin ${{ github.event.before }} --depth=1
         # See https://github.community/t/check-pushed-file-changes-with-git-diff-tree-in-github-actions/17220/10
-        export DIFF=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA | xargs -L1 dirname | uniq )
-        echo "$DIFF"
+        DIFF=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA | xargs -L1 dirname | uniq )
+        DIFF=$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )
         # Escape newlines (replace \n with %0A)
-        echo "::set-output name=diff::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"
+        echo "::set-output name=diff::$( echo "$DIFF" )"
     - run: echo "${{ steps.diff.outputs.diff }}"
     - name: Set matrix for build
       id: set-matrix
       run: |
         # See https://stackoverflow.com/a/62953566/11948346
-        DIFF=("rt" "at")
+        DIFF=${{ steps.diff.outputs.diff }}
         JSON="{\"component\":["
         for component in "${DIFF[@]}"
         do
