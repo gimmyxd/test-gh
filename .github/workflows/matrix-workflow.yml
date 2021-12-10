@@ -13,8 +13,9 @@ jobs:
     - run: |
         readarray -t files <<<"$(jq -r '.[]' <<<'${{ steps.files.outputs.all }}')"
         # Escape newlines (replace \n with %0A)
+        echo $files
         echo "::set-output name=matrix::$( echo "${files}" | sed ':a;N;$!ba;s/\n/%0A/g' )"
-
+        echo ${{ steps.set-matrix.outputs.matrix }}
   deploy:
     needs: prepare
     runs-on: ubuntu-latest
