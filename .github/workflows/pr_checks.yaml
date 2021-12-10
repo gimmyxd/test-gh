@@ -21,7 +21,7 @@ jobs:
           arr=()
           while read -r line; do
             arr+=("$line")
-          done < <(git log --pretty=format:"%H"  origin/${{github.ref}}...origin/main)
+          done < <(git log --pretty=format:"%H"  origin/${{github.head_ref}}...origin/main)
 
           # check for the commits that are not in beta
           for commit in "${arr[@]}"; do
