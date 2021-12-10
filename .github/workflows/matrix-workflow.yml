@@ -9,10 +9,11 @@ jobs:
     - id: set-matrix
       run: |
         # See https://github.community/t/check-pushed-file-changes-with-git-diff-tree-in-github-actions/17220/10
-        export DIFF=$( git diff --name-only HEAD HEAD~1 | xargs -L1 dirname | uniq )
+        export DIFF=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA | xargs -L1 dirname | uniq )
         echo "$DIFF"
         # Escape newlines (replace \n with %0A)
-        echo "::set-output name=diff::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"
+        echo "::set-output name=matrix::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"
+    - run: echo "${{ steps.diff.outputs.matrix }}"
 
   deploy:
     needs: prepare
