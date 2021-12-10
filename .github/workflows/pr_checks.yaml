@@ -13,16 +13,23 @@ jobs:
           fetch-depth: 0
       - name: Check commit is in beta
         run: |
+          success=0
           git fetch origin beta
           git fetch origin main
 
           # get a list of commits that from pull reuqest
-          git log --pretty=format:"%H"  HEAD^1...origin/main
+          arr=()
+          while read -r line; do
+            arr+=("$line")
+          done < <(git log --pretty=format:"%H"  HEAD^1...origin/main)
 
+          for commit in "${arr[@]}"; do
+            if git merge-base --is-ancestor $GITHUB_SHA beta; then
+              echo "beta branch does not contain $GITHUB_SHA"
+              success=1
+            else
+              echo "beta branch contains $GITHUB_SHA"
+            fi
+          done
 
-          # if git merge-base --is-ancestor $GITHUB_SHA beta; then
-          #   echo "beta branch does not contain $GITHUB_SHA"
-          #   exit 1
-          # else
-          #   echo "beta branch contains $GITHUB_SHA"
-          # fi
+          exit $success
