@@ -1,0 +1,17 @@
+name: pr_checks
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Check $GITHUB_SHA is in beta
+        run: |
+          git fetch origin beta
+          git branch --contains $GITHUB_SHA | grep beta
