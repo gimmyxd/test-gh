@@ -8,12 +8,12 @@ on:
 
 jobs:
   call-main:
-    if: ${{ github.ref }} == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     uses: gimmyxd/test-gh/.github/workflows/reusable-workflow.yml@main
     with:
       username: workflow2
   call-prod:
-    if: ${{ github.ref }} == 'refs/heads/production'
+    if: github.ref == 'refs/heads/production'
     uses: gimmyxd/test-gh/.github/workflows/reusable-workflow.yml@production
     with:
       username: workflow2
