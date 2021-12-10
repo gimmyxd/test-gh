@@ -14,9 +14,12 @@ jobs:
       - name: Check ${{GITHUB_SHA}} is in beta
         run: |
           git fetch origin beta
-          if git merge-base --is-ancestor $GITHUB_SHA beta; then
-            echo "beta branch does not contain $GITHUB_SHA"
-            exit 1
-          else
-            echo "beta branch contains $GITHUB_SHA"
-          fi
+          commit=$( git log --pretty=format:"%H" origin/$GITHUB_BASE_REF $GITHUB_SHA )
+          echo "commits: $commits"
+
+          # if git merge-base --is-ancestor $GITHUB_SHA beta; then
+          #   echo "beta branch does not contain $GITHUB_SHA"
+          #   exit 1
+          # else
+          #   echo "beta branch contains $GITHUB_SHA"
+          # fi
