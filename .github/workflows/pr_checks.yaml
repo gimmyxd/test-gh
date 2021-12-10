@@ -17,10 +17,11 @@ jobs:
           git fetch origin
 
           # get a list of commits that from pull reuqest
+          commits=$( git log --pretty=format:"%H"  HEAD...origin/main )
           arr=()
           while read -r line; do
             arr+=("$line")
-          done < <(git log --pretty=format:"%H"  $GITHUB_SHA...origin/main)
+          done <<< "$commits"
           unset arr[0]
 
           # check for the commits that are not in beta
