@@ -7,42 +7,39 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Generate diff
       id: diff
       run: |
-        git fetch origin ${{ github.event.before }} --depth=1
-        # See https://github.community/t/check-pushed-file-changes-with-git-diff-tree-in-github-actions/17220/10
-        DIFF=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA | xargs -L1 dirname | uniq )
-        DIFF=$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )
+        # get a list of changed directories
+        DIFF=$( git diff --name-only --diff-filter=ACMRTUXB HEAD HEAD~1 | xargs -L1 dirname | uniq )
+
         # Escape newlines (replace \n with %0A)
+        DIFF=$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )
+
         echo "::set-output name=diff::$( echo "$DIFF" )"
     - run: echo "${{ steps.diff.outputs.diff }}"
     - name: Set matrix for build
       id: set-matrix
       run: |
-        # See https://stackoverflow.com/a/62953566/11948346
         DIFF="${{ steps.diff.outputs.diff }}"
         JSON="{\"component\":["
 
-
-        arr=()
+        # add each changed directory to the matrix as components
         while read -r line; do
           if [[ $line == .github/* ]]; then
             continue
           fi
-          arr+=("$line")
-        done <<< "$DIFF"
-
-        for component in "${arr[@]}"
-        do
           JSON="$JSON\"${component}\", "
-        done
+        done <<< "$DIFF"
 
         # Remove last "," and add closing brackets
         if [[ $JSON == "*," ]]; then
           JSON="${JSON%?}"
         fi
         JSON="$JSON]}"
+
         echo $JSON
 
         # Set output
