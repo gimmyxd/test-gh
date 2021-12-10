@@ -14,6 +14,8 @@ jobs:
       - name: Check commit is in beta
         run: |
           git fetch origin beta
+          git fetch origin main
+
           # get a list of commits that from pull reuqest
           git log --pretty=format:"%H"  HEAD^1...origin/main
 
