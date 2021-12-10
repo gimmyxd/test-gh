@@ -21,11 +21,15 @@ jobs:
       id: set-matrix
       run: |
         # See https://stackoverflow.com/a/62953566/11948346
-        DIFF="${{ steps.diff.outputs.diff }}"
-        JSON="{\"component\":[$DIFF"
+        DIFF=("rt" "at")
+        JSON="{\"component\":["
+        for component in "${DIFF[@]}"
+        do
+          JSON="$JSON\"${component}\", "
+        done
 
         # Remove last "," and add closing brackets
-        if [[ $JSON == *, ]]; then
+        if [[ $JSON == "*," ]]; then
           JSON="${JSON%?}"
         fi
         JSON="$JSON]}"
