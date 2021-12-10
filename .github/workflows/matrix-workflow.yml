@@ -1,7 +1,7 @@
 name: build
 on: push
 jobs:
-  job1:
+  prepare:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -9,11 +9,11 @@ jobs:
     - id: set-matrix
       run: |
         DIRS=`git diff --name-only HEAD HEAD~1 | xargs -L1 dirname | uniq`
-        echo "::set-output name=matrix::{\"component\": [\"c\", \"d\"]}"
-  job2:
-    needs: job1
+        echo "::set-output name=matrix::{\"component\": [\"registry-tenant\", \"aserto-registry\"]}"
+  deploy:
+    needs: prepare
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.job1.outputs.matrix)}}
+      matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
     steps:
-    - run: echo ${{ matrix.component }}}
+    - run: echo ${{ matrix.component }}
