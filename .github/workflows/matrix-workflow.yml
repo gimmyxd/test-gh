@@ -6,6 +6,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
+    - uses: actions/checkout@v2
     - id: set-matrix
       run: |
         git fetch origin ${{ github.event.before }} --depth=1
