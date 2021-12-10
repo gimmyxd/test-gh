@@ -26,11 +26,11 @@ jobs:
 
           # check for the commits that are not in beta
           for commit in "${arr[@]}"; do
-            if git merge-base --is-ancestor $GITHUB_SHA origin/beta; then
-              echo "beta branch does not contain $GITHUB_SHA"
+            if git merge-base --is-ancestor $commit origin/beta; then
+              echo "beta branch does not contain $commit"
               success=1
             else
-              echo "beta branch contains $GITHUB_SHA"
+              echo "beta branch contains $commit"
             fi
           done
 
