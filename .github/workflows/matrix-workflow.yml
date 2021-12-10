@@ -23,7 +23,12 @@ jobs:
         # See https://stackoverflow.com/a/62953566/11948346
         DIFF=${{ steps.diff.outputs.diff }}
         JSON="{\"component\":["
-        for component in "${DIFF[@]}"
+        arr=()
+        while read -r line; do
+          arr+=("$line")
+        done <<< "$DIFF"
+
+        for component in "${arr[@]}"
         do
           JSON="$JSON\"${component}\", "
         done
