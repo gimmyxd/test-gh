@@ -7,15 +7,32 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - uses: actions/checkout@v2
-    - id: set-matrix
+    - name: Generate diff
+      id: diff
       run: |
         git fetch origin ${{ github.event.before }} --depth=1
         # See https://github.community/t/check-pushed-file-changes-with-git-diff-tree-in-github-actions/17220/10
         export DIFF=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA | xargs -L1 dirname | uniq )
         echo "$DIFF"
         # Escape newlines (replace \n with %0A)
-        echo "::set-output name=matrix::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"
-    - run: echo "${{ steps.set-matrix.outputs.matrix }}"
+        echo "::set-output name=diff::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"
+    - run: echo "${{ steps.diff.outputs.diff }}"
+    - name: Set matrix for build
+      id: set-matrix
+      run: |
+        # See https://stackoverflow.com/a/62953566/11948346
+        DIFF="${{ steps.diff.outputs.diff }}"
+        JSON="{\"component\":[$DIFF"
+
+        # Remove last "," and add closing brackets
+        if [[ $JSON == *, ]]; then
+          JSON="${JSON%?}"
+        fi
+        JSON="$JSON]}"
+        echo $JSON
+
+        # Set output
+        echo "::set-output name=matrix::$( echo "$JSON" )"
 
   deploy:
     needs: prepare
