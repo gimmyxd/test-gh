@@ -13,7 +13,7 @@ jobs:
       id: diff
       run: |
         # get a list of changed directories
-        DIFF=$( git diff --name-only --diff-filter=ACMRTUXB HEAD HEAD~1 | xargs -L1 dirname | uniq )
+        DIFF=$( git diff --name-only --diff-filter=ACMRTUXB HEAD~1 HEAD | xargs dirname )
 
         # Escape newlines (replace \n with %0A)
         DIFF=$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )
@@ -27,12 +27,18 @@ jobs:
         JSON="{\"component\":["
 
         # add each changed directory to the matrix as components
+        arr=()
         while read -r line; do
           if [[ $line == .github/* ]]; then
             continue
           fi
-          JSON="$JSON\"${component}\", "
+          arr+=("$line")
         done <<< "$DIFF"
+
+        for component in "${arr[@]}"
+        do
+          JSON="$JSON\"${component}\", "
+        done
 
         # Remove last "," and add closing brackets
         if [[ $JSON == "*," ]]; then
