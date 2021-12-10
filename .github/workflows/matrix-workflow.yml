@@ -6,13 +6,14 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-    - id: set-matrix
-      run: |
-        # See https://github.community/t/check-pushed-file-changes-with-git-diff-tree-in-github-actions/17220/10
-        DIFF=`git diff --name-only HEAD HEAD~1 | xargs -L1 dirname | uniq`
-        echo "$DIFF"
+    - id: files
+      uses: jitterbit/get-changed-files@v1
+      with:
+        format: 'json'
+    - run: |
+        readarray -t files <<<"$(jq -r '.[]' <<<'${{ steps.files.outputs.all }}')"
         # Escape newlines (replace \n with %0A)
-        echo "::set-output name=diff::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"
+        echo "::set-output name=matrix::$( echo "${files}" | sed ':a;N;$!ba;s/\n/%0A/g' )"
 
   deploy:
     needs: prepare
