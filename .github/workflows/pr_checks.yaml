@@ -11,7 +11,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Check $GITHUB_SHA is in beta
+      - name: Check ${{GITHUB_SHA}} is in beta
         run: |
           git fetch origin beta
-          git branch --contains $GITHUB_SHA | grep beta
+          if git merge-base --is-ancestor $GITHUB_SHA beta; then
+            echo "beta branch does not contain $GITHUB_SHA"
+            exit 1
+          else
+            echo "beta branch contains $GITHUB_SHA"
+          fi
