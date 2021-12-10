@@ -15,7 +15,7 @@ jobs:
         run: |
           git fetch origin beta
           # get a list of commits that from pull reuqest
-          git log --pretty=format:"%H"  HEAD~1...origin/main
+          git log --pretty=format:"%H"  HEAD^1...origin/main
 
 
           # if git merge-base --is-ancestor $GITHUB_SHA beta; then
