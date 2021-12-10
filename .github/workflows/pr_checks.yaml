@@ -27,10 +27,10 @@ jobs:
           # check for the commits that are not in beta
           for commit in "${arr[@]}"; do
             if git merge-base --is-ancestor $commit origin/beta; then
+              echo "beta branch contains $commit"
+            else
               echo "beta branch does not contain $commit"
               success=1
-            else
-              echo "beta branch contains $commit"
             fi
           done
 
