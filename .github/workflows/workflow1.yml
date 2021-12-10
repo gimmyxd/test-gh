@@ -7,6 +7,6 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: gimmyxd/test-gh/.github/workflows/reusable-workflow.yml@main
+    uses: gimmyxd/test-gh/.github/workflows/reusable-workflow.yml
     with:
       username: workflow1
