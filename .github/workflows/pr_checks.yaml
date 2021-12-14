@@ -17,4 +17,4 @@ jobs:
       - name: Check that beta can be merged in main
         run: |
           git fetch origin beta
-          git merge --no-commit --no-ff beta
+          git merge --no-commit --no-ff origin/beta
