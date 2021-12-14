@@ -16,5 +16,7 @@ jobs:
           fetch-depth: 0
       - name: Check that beta can be merged in main
         run: |
+          git config --global user.email "github-bot@aserto.com"
+          git config --global user.name "Aserto Bot"
           git fetch origin beta
           git merge --no-commit --no-ff origin/beta
